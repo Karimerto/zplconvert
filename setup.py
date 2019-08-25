@@ -8,7 +8,7 @@ import zplconvert
 setup(name='zplconvert',
       packages=find_packages(),
       package_data={
-          '': ['zebra_logo.png']
+          '': ['zebra_logo.png', 'zebra_logo.grf']
       },
       description="ZPL Image converter",
       long_description=open('README.md').read(),
