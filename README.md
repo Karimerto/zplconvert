@@ -32,6 +32,21 @@ Flag     | Description
 `--label` | Add header and footer needed for a complete ZPL label. This allows the result to be sent directly to a printer (e.g. with `curl`).
 `--output filename` | Write result to file instead of `stdout`.
 
+The same converter can be used directly from Python as well
+
+```python
+from zplconvert import ZPLConvert
+convert = ZPLConvert("zebra_logo.png")
+convert.set_compress_hex(True)
+result = convert.convert()
+```
+
+See the code for other options that can be set on the converter.
+
+Also included is a helper utility for converting ZPL images back to PNG (or any other image format supported by PIL).
+
+    zplparse --output logo.png zebra_logo.grf
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/Karimerto/zplconvert.

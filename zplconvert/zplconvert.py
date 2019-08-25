@@ -6,8 +6,6 @@ import sys
 from cStringIO import StringIO
 from PIL import Image
 
-__version__ = '0.0.1'
-
 def _int_to_hex(value, upper=False):
     """
     Convert int value to hex.
