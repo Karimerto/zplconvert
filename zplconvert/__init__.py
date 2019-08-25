@@ -3,4 +3,4 @@
 from .zplconvert import ZPLConvert
 from .zplparser import zpl_parse
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
