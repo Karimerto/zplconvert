@@ -15,13 +15,14 @@ setup(name='zplconvert',
       author='Teemu Karimerto',
       author_email='teemu.karimerto@gmail.com',
       version=zplconvert.__version__,
-      url='https://github.com/karimerto/zplconvert',
+      url='https://github.com/Karimerto/zplconvert',
       license='MIT License',
       entry_points={
           'console_scripts': [
               'zplconvert = zplconvert.main:main'
           ]
       },
+      keywords='zebra zpl convert converter',
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Intended Audience :: Developers',

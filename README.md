@@ -34,7 +34,7 @@ Flag     | Description
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/karimerto/zplconvert.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Karimerto/zplconvert.
 
 ## License
 
@@ -42,6 +42,6 @@ This source is released under the standard [MIT License](https://opensource.org/
 
 ## Zebra logo
 
-![Zebra Logo](zebra_logo.png?raw=true)
+![Zebra Logo](zplconvert/zebra_logo.png?raw=true)
 
 The Zebra Logo was copied from [Zebra Design](https://www.zebra.com/us/en/design.html).
