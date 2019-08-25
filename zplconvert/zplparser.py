@@ -8,7 +8,7 @@ import argparse
 from cStringIO import StringIO
 from PIL import Image
 
-GFA_MATCHER = re.compile(r"\^GFA,([1-9][0-9]+),([1-9][0-9]+),([1-9][0-9]+),([^\^]+)\^FS")
+GFA_MATCHER = re.compile(r"\^GFA,([1-9][0-9]*),([1-9][0-9]*),([1-9][0-9]*),([^\^]+)\^FS")
 
 def _hex_nibble_to_bytes(value):
     """
