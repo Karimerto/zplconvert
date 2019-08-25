@@ -70,7 +70,7 @@ class ZPLConvert(object):
             body = self._compress_hex(body)
 
         # Add header and footer, with optional coordinates
-        image = self._get_header(x, y) + body + self._get_footer()
+        image = self._get_header(len(body), x, y) + body + self._get_footer()
 
         # Add label start and stop bytes
         if label:
@@ -78,15 +78,15 @@ class ZPLConvert(object):
 
         return image
 
-    def _get_header(self, x=None, y=None):
+    def _get_header(self, size, x=None, y=None):
         """
         Get header, with optional positioning.
         """
         pos = ""
         if x is not None and y is not None:
             pos = "^FO{x},{y}".format(x=x, y=y)
-        return pos + "^GFA,{total},{total},{width_bytes},".format(
-            total=self._total, width_bytes=self._width_bytes)
+        return pos + "^GFA,{size},{total},{width_bytes},".format(
+            size=size, total=self._total, width_bytes=self._width_bytes)
 
     def _get_footer(self):
         """

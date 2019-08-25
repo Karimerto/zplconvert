@@ -40,7 +40,7 @@ def zpl_parse(filename):
         raise ValueError("Could not find ZPL image")
 
     # Calculate image size
-    total = int(match.group(1))
+    total = int(match.group(2))
     width_bytes = int(match.group(3))
     height = total / width_bytes
     width = width_bytes * 8
