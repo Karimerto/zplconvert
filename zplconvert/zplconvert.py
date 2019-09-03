@@ -13,6 +13,27 @@ def _int_to_hex(value, upper=False):
     result = ('0' + hex(value)[2:])[-2:]
     return result.upper() if upper else result
 
+def _get_compress(counter, char):
+    """
+    Get compressed bytes for a character.
+    """
+    retval = ""
+    if counter > 20:
+        mult = (counter / 20) * 20
+        rest = (counter % 20)
+        retval = ZPLConvert.multiplier[mult]
+        if rest != 0:
+            retval += ZPLConvert.multiplier[rest]
+    # Add multiplier only if counter is larger than 2
+    elif counter > 2:
+        retval = ZPLConvert.multiplier[counter]
+    # Repeat twice, if necessary
+    elif counter == 2:
+        retval = char
+
+    # Always add the actual character
+    return retval + char
+
 class ZPLConvert(object):
     """
     Convert any image to ZPL representation.
@@ -52,6 +73,19 @@ class ZPLConvert(object):
         Dither the image instead of using a hard limit.
         """
         self._dither = dither
+
+    def convert_for_upload(self, targetfile, filename=None):
+        """
+        Returns code suitable for uploading graphics directly on the printer.
+        """
+        filename = filename or self._filename
+        if not filename:
+            raise ValueError("No filename given")
+
+        # Create image body
+        body = self._create_body(filename)
+
+        return self._get_upload_header(targetfile) + body
 
     def convert(self, filename=None, label=False, x=None, y=None):
         """
@@ -94,10 +128,21 @@ class ZPLConvert(object):
         """
         return "^FS"
 
-    def _create_body(self, filename):
+    def _get_upload_header(self, targetfile):
         """
-        Create uncompressed body.
-        Filename can be '-' for reading data from stdin.
+        Returns the graphics upload header.
+        """
+        # Target file must include location, if not then assume RAM
+        if ':' not in targetfile:
+            targetfile = 'R:' + targetfile
+
+        return "~DG{targetfile},{total},{width_bytes},".format(
+            targetfile=targetfile, total=self._total, width_bytes=self._width_bytes)
+
+    def _get_bw_image(self, filename):
+        """
+        Convert image to black and white.
+        Also update image size.
         """
 
         source = StringIO(sys.stdin.read()) if filename == '-' else filename
@@ -119,6 +164,16 @@ class ZPLConvert(object):
         self._width_bytes = (width + 7) / 8
         self._total = self._width_bytes * height
 
+        return bwimage
+
+    def _create_body(self, filename):
+        """
+        Create uncompressed body.
+        Filename can be '-' for reading data from stdin.
+        """
+
+        bwimage = self._get_bw_image(filename)
+
         # Convert bytes to simple hex
         idx = 0
         result = []
@@ -130,9 +185,6 @@ class ZPLConvert(object):
                 result.append(row)
                 idx = 0
                 row = ""
-
-        # This should not happen
-        assert len(result) == height, "Conversion failed"
 
         return '\n'.join(result) + '\n'
 
@@ -146,26 +198,6 @@ class ZPLConvert(object):
         counter = 1
         prev = ''
         first_char = True
-
-        def _get_compress(counter, char):
-            """
-            Get compressed bytes for a character.
-            """
-            retval = ""
-            if counter > 20:
-                mult = (counter / 20) * 20
-                rest = (counter % 20)
-                retval = ZPLConvert.multiplier[mult]
-                if rest != 0:
-                    retval += ZPLConvert.multiplier[rest]
-            # Add multiplier only if counter is larger than 2
-            elif counter > 2:
-                retval = ZPLConvert.multiplier[counter]
-            # Repeat twice, if necessary
-            elif counter == 2:
-                retval = char
-
-            return retval + char
 
         for char in body:
             if first_char:

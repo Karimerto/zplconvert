@@ -29,6 +29,8 @@ def parse_args():
                         help="Add header and footer for a complete ZPL label")
     parser.add_argument('--output', '-o',
                         help="Output filename, or stdout if not defined")
+    parser.add_argument('--upload', '-u',
+                        help="Return data suitable for direct upload")
     parser.add_argument('filename', help="Source filename, or '-' for stdin")
 
     return parser.parse_args()
@@ -51,7 +53,10 @@ def main():
     if args.position:
         x, y = (int(val) for val in args.position.split(','))
 
-    result = converter.convert(label=args.label, x=x, y=y)
+    if args.upload:
+        result = converter.convert_for_upload(args.upload)
+    else:
+        result = converter.convert(label=args.label, x=x, y=y)
 
     # Write result to file or to stdout
     if args.output:

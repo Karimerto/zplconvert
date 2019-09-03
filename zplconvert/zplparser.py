@@ -20,6 +20,14 @@ def _hex_nibble_to_bytes(value):
             ('\x00' if val & 2 == 2 else '\xff') +
             ('\x00' if val & 1 == 1 else '\xff'))
 
+def _get_dimensions(match):
+    """
+    Get image size.
+    """
+    total = int(match.group(2))
+    width_bytes = int(match.group(3))
+    return width_bytes * 8, total / width_bytes
+
 def zpl_parse(filename):
     """
     Convert a ZPL file back to an image.
@@ -34,20 +42,15 @@ def zpl_parse(filename):
     data = source.read()
 
     # Find start of an image
-    match = GFA_MATCHER.match(data)
+    match = GFA_MATCHER.search(data)
 
     if not match:
         raise ValueError("Could not find ZPL image")
 
     # Calculate image size
-    total = int(match.group(2))
-    width_bytes = int(match.group(3))
-    height = total / width_bytes
-    width = width_bytes * 8
-    bytecount = width * height
+    width, height = _get_dimensions(match)
 
     print "Calculated image size: %d x %d" % (width, height)
-    print "Expected byte count: %d" % bytecount
 
     # Convert length multiplier to character code
     # G - Y = 1 - 19, g - z = 20 - 400
@@ -100,7 +103,7 @@ def zpl_parse(filename):
             row += 1
 
     assert row == height, "Image height does not match"
-    assert len(result) == bytecount, "Parsed byte count does not match"
+    assert len(result) == width * height, "Parsed byte count does not match"
 
     # Create new image from data
     image = Image.frombytes('L', (width, height), result).convert('1')
