@@ -17,7 +17,7 @@ setup(name='zplconvert',
       author_email='teemu.karimerto@gmail.com',
       version=zplconvert.__version__,
       url='https://github.com/Karimerto/zplconvert',
-      download_url='https://github.com/Karimerto/zplconvert/archive/v0.0.3.tar.gz',
+      download_url='https://github.com/Karimerto/zplconvert/archive/v0.0.4.tar.gz',
       license='MIT License',
       entry_points={
           'console_scripts': [
