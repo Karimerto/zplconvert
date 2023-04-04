@@ -3,6 +3,8 @@
 """
 Helper utility for using the ZPL converter.
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
 import argparse
 from zplconvert import ZPLConvert
@@ -63,7 +65,7 @@ def main():
         with open(args.output, 'wb') as out:
             out.write(result)
     else:
-        print result
+        print(result)
 
 if __name__ == '__main__':
     main()

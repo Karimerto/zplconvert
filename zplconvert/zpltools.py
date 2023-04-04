@@ -1,7 +1,10 @@
 """
 Helpful ZPL tools.
 """
+from __future__ import print_function
 
+from builtins import hex
+from builtins import object
 import os
 import re
 import base64
@@ -224,7 +227,7 @@ class Printer(object):
                 size=len(b64data), data=data)
 
             if self._host is None:
-                print command
+                print(command)
             else:
                 self.send_command(command)
 
@@ -252,7 +255,7 @@ class Printer(object):
                 targetfile=targetfile, size=len(indata), data=hexdata)
 
             if self._host is None:
-                print command
+                print(command)
             else:
                 self.send_command(command)
 
@@ -280,7 +283,7 @@ class Printer(object):
                 targetfile=targetfile, size=len(indata), data=hexdata)
 
             if self._host is None:
-                print command
+                print(command)
             else:
                 self.send_command(command)
 

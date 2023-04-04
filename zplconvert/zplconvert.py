@@ -1,9 +1,17 @@
 """
 Converter for generating ZPL images.
 """
+from __future__ import division
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import hex
+from builtins import chr
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import sys
-from cStringIO import StringIO
+from io import StringIO
 from PIL import Image
 
 def _int_to_hex(value, upper=False):
@@ -19,7 +27,7 @@ def _get_compress(counter, char):
     """
     retval = ""
     if counter > 20:
-        mult = (counter / 20) * 20
+        mult = (old_div(counter, 20)) * 20
         rest = (counter % 20)
         retval = ZPLConvert.multiplier[mult]
         if rest != 0:
@@ -43,8 +51,8 @@ class ZPLConvert(object):
 
     # Convert length multiplier to character code
     # G - Y = 1 - 19, g - z = 20 - 400
-    multiplier = dict([(i, chr(ord('F') + i)) for i in xrange(1, 20)] + \
-                      [(20 * i, chr(ord('f') + i)) for i in xrange(1, 21)])
+    multiplier = dict([(i, chr(ord('F') + i)) for i in range(1, 20)] + \
+                      [(20 * i, chr(ord('f') + i)) for i in range(1, 21)])
 
     def __init__(self, filename=None):
         self._filename = filename
@@ -161,7 +169,7 @@ class ZPLConvert(object):
             bwimage = image.convert('L').point(conv, mode='1')
 
         # Calculate image size
-        self._width_bytes = (width + 7) / 8
+        self._width_bytes = old_div((width + 7), 8)
         self._total = self._width_bytes * height
 
         return bwimage
@@ -179,7 +187,7 @@ class ZPLConvert(object):
         result = []
         row = ""
         for char in bwimage.tobytes():
-            row += _int_to_hex(ord(char))
+            row += _int_to_hex(char)
             idx += 1
             if idx == self._width_bytes:
                 result.append(row)

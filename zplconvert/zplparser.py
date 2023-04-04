@@ -1,11 +1,18 @@
 """
 Convert ZPL image back to regular image.
 """
+from __future__ import division
+from __future__ import print_function
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import chr
+from builtins import range
+from past.utils import old_div
 import re
 import sys
 import argparse
-from cStringIO import StringIO
+from io import StringIO
 from PIL import Image
 
 GFA_MATCHER = re.compile(r"\^GFA,([1-9][0-9]*),([1-9][0-9]*),([1-9][0-9]*),([^\^]+)\^FS")
@@ -26,7 +33,7 @@ def _get_dimensions(match):
     """
     total = int(match.group(2))
     width_bytes = int(match.group(3))
-    return width_bytes * 8, total / width_bytes
+    return width_bytes * 8, old_div(total, width_bytes)
 
 def zpl_parse(filename):
     """
@@ -50,12 +57,12 @@ def zpl_parse(filename):
     # Calculate image size
     width, height = _get_dimensions(match)
 
-    print "Calculated image size: %d x %d" % (width, height)
+    print("Calculated image size: %d x %d" % (width, height))
 
     # Convert length multiplier to character code
     # G - Y = 1 - 19, g - z = 20 - 400
-    multiplier = dict([(chr(ord('F') + i), i) for i in xrange(1, 20)] + \
-                      [(chr(ord('f') + i), 20 * i) for i in xrange(1, 21)])
+    multiplier = dict([(chr(ord('F') + i), i) for i in range(1, 20)] + \
+                      [(chr(ord('f') + i), 20 * i) for i in range(1, 21)])
 
     # Read byte by byte
     row = 0
@@ -134,7 +141,7 @@ def main():
     args = parse_args()
 
     if not args.format and not args.output and not args.show:
-        print >> sys.stderr, "Either filename or image format must be provided"
+        print("Either filename or image format must be provided", file=sys.stderr)
         return 1
 
     image = zpl_parse(args.filename)
@@ -146,7 +153,7 @@ def main():
         output = args.output or StringIO()
         image.save(output, format=args.format)
         if not args.output:
-            print output.getvalue()
+            print(output.getvalue())
 
     return 0
 
